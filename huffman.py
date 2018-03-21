@@ -66,7 +66,13 @@ def make_freq_dict(text):
     >>> d == {65: 1, 66: 2, 67: 1}
     True
     """
-    # todo
+    d = {}
+    for i in text:
+        if i in d:
+            d[i] = d[i]+1
+        else:
+            d[i] = 1
+    return d
 
 
 def huffman_tree(freq_dict):
