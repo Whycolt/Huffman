@@ -89,23 +89,26 @@ def huffman_tree(freq_dict):
     >>> t == result1 or t == result2
     True
     """
-    if len(freq_dict):
-        return HuffmanNode(None,None,HuffmanNode(None))
-    lowest1 = None
-    lowesti1 = None
-    lowest2 = None
-    lowesti2 = None
-    for i in freq_dict:
-        if lowest1 == None or d[i] < lowest1:
-            lowest1 = d[i]
-            lowesti1 = i
-        else if lowest2 == None or d[i] < lowest2:
-            lowest2 = d[i]
-            lowesti2 = i
-    del freq_dict[lowesti1]
-    del freq_dict[lowesti2]
-    freq_dict[None] = lowest1 + lowest2
-    return huffman_tree(freq_dict)
+    while len(freq_dict) > 1:
+        s1 = None
+        s2 = None
+        for i in freq_dict():
+            if s1 == None or freq_dict[i] < freq_dict[s1]:
+                s1 = i
+            else if s2 == None or freq_dict[i] < freq_dict[s2]:
+                s2 = i
+        h1 = s1
+        h2 =s2
+        if isinstance(s1, int):
+            s1 = HuffmanNode(freq_dict[h1])
+        if isinstance(s2, int):
+            s1 = HuffmanNode(freq_dict[h2])
+        freq_dict[HuffmanNode(None,s1,s2)] = freq_dict[h1] + freq_dict[h2]
+        freq_dict.pop(h1)
+        freq_dict.pop(h2)
+    for i in freq_dict():
+        return i
+                
 
 
 def get_codes(tree):
