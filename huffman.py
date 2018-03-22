@@ -122,8 +122,18 @@ def get_codes(tree):
     >>> d == {3: "0", 2: "1"}
     True
     """
-    # todo
-
+    return parse_tree(tree, "")
+        
+def parse_tree(node, code, codict=[]):
+    dict1, dict2 = {}, {}
+    if node.is_leaf:
+        codict[node.symbol] = code
+        return codict
+    if node.left:
+        dict1 = parse_tree(node.left, code+"0", codict)
+    if node.right:
+        dict2 = parse_tree(node.right, code+"1", codict)
+    return {**dict1, **dict2)
 
 def number_nodes(tree):
     """ Number internal nodes in tree according to postorder traversal;
