@@ -141,7 +141,7 @@ def parse_tree(node, code, codict=[]):
         dict1 = parse_tree(node.left, code+"0", codict)
     if node.right:
         dict2 = parse_tree(node.right, code+"1", codict)
-    return {**dict1, **dict2)
+    return (**dict1, **dict2)
 
 def number_nodes(tree):
     """ Number internal nodes in tree according to postorder traversal;
@@ -187,8 +187,13 @@ def avg_length(tree, freq_dict):
     >>> avg_length(tree, freq)
     1.9
     """
-    # todo
-
+    newdict = get_codes(tree)
+    totalbits = 0
+    totalchar = 0
+    for i in newdict():
+        totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
+        totalchar = totalchar + freqdict[i]
+    return totalbits/totalchar
 
 def generate_compressed(text, codes):
     """ Return compressed form of text, using mapping in codes for each symbol.

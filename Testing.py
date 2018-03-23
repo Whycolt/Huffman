@@ -1,39 +1,53 @@
+
 from nodes import HuffmanNode, ReadNode
-def number_nodes(tree):
-    """ Number internal nodes in tree according to postorder traversal;
-    start numbering at 0.
+def get_codes(tree):
+    """ Return a dict mapping symbols from Huffman tree to codes.
 
-    @param HuffmanNode tree:  a Huffman tree rooted at node 'tree'
-    @rtype: NoneType
+    @param HuffmanNode tree: a Huffman tree rooted at node 'tree'
+    @rtype: dict(int,str)
 
-    >>> left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
-    >>> right = HuffmanNode(None, HuffmanNode(9), HuffmanNode(10))
-    >>> tree = HuffmanNode(None, left, right)
-    >>> number_nodes(tree)
-    >>> tree.left.number
-    0
-    >>> tree.right.number
-    1
-    >>> tree.number
-    2
+    >>> tree = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+    >>> d = get_codes(tree)
+    >>> d == {3: "0", 2: "1"}
+    True
     """
-    parse_num(tree,0)
+    return parse_tree(tree, "")
+        
+def parse_tree(node, code, codict=[]):
+    dict1, dict2 = {}, {}
+    if node.is_leaf:
+        codict[node.symbol] = code
+        return codict
+    if node.left:
+        dict1 = parse_tree(node.left, code+"0", codict)
+    if node.right:
+        dict2 = parse_tree(node.right, code+"1", codict)
+    return (**dict1, **dict2)
+def avg_length(tree, freq_dict):
+    """ Return the number of bits per symbol required to compress text
+    made of the symbols and frequencies in freq_dict, using the Huffman tree.
 
-def parse_num(node,counter):
-    if node.symbol != None:
-        return counter
-    counter = parse_num(node.left,counter)
-    counter = parse_num(node.right,counter)
-    node.number = counter
-    counter = counter + 1
-    return counter
+    @param HuffmanNode tree: a Huffman tree rooted at node 'tree'
+    @param dict(int,int) freq_dict: frequency dictionary
+    @rtype: float
 
+    >>> freq = {3: 2, 2: 7, 9: 1}
+    >>> left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+    >>> right = HuffmanNode(9)
+    >>> tree = HuffmanNode(None, left, right)
+    >>> avg_length(tree, freq)
+    1.9
+    """
+    newdict = get_codes(tree)
+    totalbits = 0
+    totalchar = 0
+    for i in newdict():
+        totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
+        totalchar = totalchar + freqdict[i]
+    return totalbits/totalchar
+
+freq = {3: 2, 2: 7, 9: 1}
 left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
-right = HuffmanNode(None, HuffmanNode(9), HuffmanNode(10))
+right = HuffmanNode(9)
 tree = HuffmanNode(None, left, right)
-number_nodes(tree)
-print(tree.left.number)
-
-print(tree.right.number)
-
-print(tree.number)
+print(avg_length(tree, freq))
