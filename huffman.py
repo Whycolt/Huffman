@@ -161,8 +161,16 @@ def number_nodes(tree):
     >>> tree.number
     2
     """
-    # todo
+    parse_num(tree,0)
 
+def parse_num(node,counter):
+    if node.symbol != None:
+        return counter
+    counter = parse_num(node.left,counter)
+    counter = parse_num(node.right,counter)
+    node.number = counter
+    counter = counter + 1
+    return counter
 
 def avg_length(tree, freq_dict):
     """ Return the number of bits per symbol required to compress text
