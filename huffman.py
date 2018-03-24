@@ -492,7 +492,34 @@ def improve_tree(tree, freq_dict):
     >>> avg_length(tree, freq)
     2.31
     """
-    # todo
+    dic = flatten(tree,{},0)
+    for i in dic:
+        for j in dic:
+            if freq_dict[i] > freq_dict[j]:
+                if dic[i]>dic[j]:
+                    replace(tree,i,j)
+                    
+def flatten(tree,dic,layer):
+    dic1 = flatten(tree.left,dic,layer+1)
+    dic2 = flatten(tree.right,dic,layer+1)
+    for i in dic1:
+        dic[i] = dic1[i]
+    for i in dic1:
+        dic[i] = dic2[i]
+    if tree.is_leaf():
+        dic[tree.symbol] = layer
+        layer = layer + 1
+    return dic
+
+def replace(tree, find,rep):
+    if tree.symbol != None and tree.symbol == find:
+        tree.symbol = rep
+    elif tree.symbol != None and tree.symbol == rep:
+        tree.symbol = find
+    if tree.left != None:
+        replace(tree.left,find,rep)
+    if tree.right != None:
+        replace(tree.right,find,rep)
 
 if __name__ == "__main__":
     # TODO: Uncomment these when you have implemented all the functions
