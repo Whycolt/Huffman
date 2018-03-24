@@ -317,8 +317,17 @@ def generate_tree_general(node_lst, root_index):
 HuffmanNode(12, None, None)), \
 HuffmanNode(None, HuffmanNode(5, None, None), HuffmanNode(7, None, None)))
     """
-    # todo
+    node = node_lst[root_index]
+    hufftree = HuffmanNode(None, None, None)
+    huffpoint = hufftree
+    if node.l_type:
+        hufftree.left = generate_tree_general(node_lst, node.l_data)
+    if node.r_type:
+        hufftree.right = generate_tree_general(node_lst, node.l_data)
+    elif:
 
+def parse_read_node(node):
+    
 
 def generate_tree_postorder(node_lst, root_index):
     """ Return the root of the Huffman tree corresponding
