@@ -1,53 +1,84 @@
+def get_bit(byte, bit_num):
+    """ Return bit number bit_num from right in byte.
 
-from nodes import HuffmanNode, ReadNode
-def get_codes(tree):
-    """ Return a dict mapping symbols from Huffman tree to codes.
+    @param int byte: a given byte
+    @param int bit_num: a specific bit number within the byte
+    @rtype: int
 
-    @param HuffmanNode tree: a Huffman tree rooted at node 'tree'
-    @rtype: dict(int,str)
+    >>> get_bit(0b00000101, 2)
+    1
+    >>> get_bit(0b00000101, 1)
+    0
+    """
+    return (byte & (1 << bit_num)) >> bit_num
 
-    >>> tree = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
-    >>> d = get_codes(tree)
-    >>> d == {3: "0", 2: "1"}
+
+def byte_to_bits(byte):
+    """ Return the representation of a byte as a string of bits.
+
+    @param int byte: a given byte
+    @rtype: str
+
+    >>> byte_to_bits(14)
+    '00001110'
+    """
+    return "".join([str(get_bit(byte, bit_num))
+                    for bit_num in range(7, -1, -1)])
+
+
+def bits_to_byte(bits):
+    """ Return int represented by bits, padded on right.
+
+    @param str bits: a string representation of some bits
+    @rtype: int
+
+    >>> bits_to_byte("00000101")
+    5
+    >>> bits_to_byte("101") == 0b10100000
     True
     """
-    return parse_tree(tree, "")
-        
-def parse_tree(node, code, codict=[]):
-    dict1, dict2 = {}, {}
-    if node.is_leaf:
-        codict[node.symbol] = code
-        return codict
-    if node.left:
-        dict1 = parse_tree(node.left, code+"0", codict)
-    if node.right:
-        dict2 = parse_tree(node.right, code+"1", codict)
-    return (**dict1, **dict2)
-def avg_length(tree, freq_dict):
-    """ Return the number of bits per symbol required to compress text
-    made of the symbols and frequencies in freq_dict, using the Huffman tree.
+    return sum([int(bits[pos]) << (7 - pos)
+                for pos in range(len(bits))])
 
-    @param HuffmanNode tree: a Huffman tree rooted at node 'tree'
-    @param dict(int,int) freq_dict: frequency dictionary
-    @rtype: float
+def generate_compressed(text, codes):
+    """ Return compressed form of text, using mapping in codes for each symbol.
 
-    >>> freq = {3: 2, 2: 7, 9: 1}
-    >>> left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
-    >>> right = HuffmanNode(9)
-    >>> tree = HuffmanNode(None, left, right)
-    >>> avg_length(tree, freq)
-    1.9
+    @param bytes text: a bytes object
+    @param dict(int,str) codes: mapping from symbols to codes
+    @rtype: bytes
+
+    >>> d = {0: "0", 1: "10", 2: "11"}
+    >>> text = bytes([1, 2, 1, 0])
+    >>> result = generate_compressed(text, d)
+    >>> [byte_to_bits(byte) for byte in result]
+    ['10111000']
+    >>> text = bytes([1, 2, 1, 0, 2])
+    >>> result = generate_compressed(text, d)
+    >>> [byte_to_bits(byte) for byte in result]
+    ['10111001', '10000000']
     """
-    newdict = get_codes(tree)
-    totalbits = 0
-    totalchar = 0
-    for i in newdict():
-        totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
-        totalchar = totalchar + freqdict[i]
-    return totalbits/totalchar
+    convert = ""
+    for i in text:
+        convert = convert + codes[i]
+        print(convert)
+    while len(convert)%8 != 0:
+        convert = convert + "0"
+    print (convert)
+    bytelist = []
+    while len(convert)>7:
+        bytelist.append(convert[:8])
+        print (convert[:8])
+        convert = convert[8:]
+    symbollist = []
+    for i in bytelist:
+        symbollist.append(bits_to_byte(i))
+    return bytes(symbollist)
 
-freq = {3: 2, 2: 7, 9: 1}
-left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
-right = HuffmanNode(9)
-tree = HuffmanNode(None, left, right)
-print(avg_length(tree, freq))
+d = {0: "0", 1: "10", 2: "11"}
+text = bytes([1, 2, 1, 0])
+result = generate_compressed(text, d)
+print([byte_to_bits(byte) for byte in result])
+
+text = bytes([1, 2, 1, 0, 2])
+result = generate_compressed(text, d)
+print([byte_to_bits(byte) for byte in result])

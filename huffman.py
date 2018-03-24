@@ -212,7 +212,19 @@ def generate_compressed(text, codes):
     >>> [byte_to_bits(byte) for byte in result]
     ['10111001', '10000000']
     """
-    # todo
+    convert = ""
+    for i in text:
+        convert = convert + codes[i]
+    while len(convert)%8 != 0:
+        convert = convert + "0"
+    bytelist = []
+    while len(convert)>7:
+        bytelist.append(convert[:8])
+        convert = convert[8:]
+    symbollist = []
+    for i in bytelist:
+        symbollist.append(bits_to_byte(i))
+    return bytes(symbollist)
 
 
 def tree_to_bytes(tree):
