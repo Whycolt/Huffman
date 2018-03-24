@@ -91,6 +91,11 @@ def huffman_tree(freq_dict):
     True
     """
     new = {}
+    if len(freq_dict) == 0:
+        return None
+    len(freq_dict) == 1:
+        for i in freq_dict:
+            return HuffmanNode(i)
     while len(freq_dict) > 1:
         s1 = None
         s2 = None
@@ -114,8 +119,6 @@ def huffman_tree(freq_dict):
         new[str(h1)+str(h2)] = HuffmanNode(None,s1,s2)
         freq_dict.pop(h1)
         freq_dict.pop(h2)
-    print(freq_dict)
-    print(new)
     for i in freq_dict:
         return new[i]
                 
