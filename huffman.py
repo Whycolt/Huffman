@@ -355,11 +355,14 @@ HuffmanNode(None, HuffmanNode(5, None, None), HuffmanNode(7, None, None)))
     huffpoint = hufftree
     if node.l_type:
         hufftree.left = generate_tree_general(node_lst, node.l_data)
+    else:
+        hufftree.left = HuffmanNode(node.l_data, None, None)
     if node.r_type:
         hufftree.right = generate_tree_general(node_lst, node.l_data)
-    elif:
+    else:
+        hufftree.right = HuffmanNode(node.r_data, None, None)
 
-def parse_read_node(node):
+    return hufftree
     
 
 def generate_tree_postorder(node_lst, root_index):
