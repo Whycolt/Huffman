@@ -248,7 +248,40 @@ def tree_to_bytes(tree):
     >>> list(tree_to_bytes(tree))
     [0, 3, 0, 2, 1, 0, 0, 5]
     """
-    # todo
+    items = []
+    left = False
+    lleaf = False
+    right = False
+    rleaf = False
+    if tree.left != None:
+        left = True
+        if not tree.left.is_leaf():
+            a = tree_to_bytes(tree.left)
+            for i in a:
+                items.append(i)
+        lleaf = True
+    if tree.right != None:
+        right = True
+        if not tree.right.is_leaf():
+            a = tree_to_bytes(tree.right)
+            for i in a:
+                items.append(i)
+        rleaf = True
+    if left:
+        if lleaf:
+            items.append(0)
+            items.append(tree.left.symbol)
+        else:
+            items.append(1)
+            items.append(tree.left.number)
+    if left:
+        if rleaf:
+            items.append(0)
+            items.append(tree.left.symbol)
+        else:
+            items.append(1)
+            items.append(tree.left.number)
+    return bytes(items)
 
 
 def num_nodes_to_bytes(tree):
