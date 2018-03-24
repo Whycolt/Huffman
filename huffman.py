@@ -382,9 +382,34 @@ def generate_tree_postorder(node_lst, root_index):
 HuffmanNode(7, None, None)), \
 HuffmanNode(None, HuffmanNode(10, None, None), HuffmanNode(12, None, None)))
     """
-    # todo
+    node = node_lst[root_index]
+    hufftree = HuffmanNode(None, None, None)
+    lenright = 1
+    if node.r_type:
+        hufftree.right, lenright = helper_postorder(node_lst, root_index-1, lenright)
+    else:
+        hufftree.right = HuffmanNode(node.r_data, None, None)
+    if node.l_type:
+        hufftree.left = generate_tree_postorder(node_lst, root_index-lenright)
+    else:
+        hufftree.left = HuffmanNode(node.l_data, None, None)
 
+    return hufftree
 
+def helper_postorder(node_lst, root_index, lenright):
+    node = node_lst[root_index]
+    hufftree = HuffmanNode(None, None, None)
+    lenright+=1
+    if node.r_type:
+        hufftree.right, lenright = helper_postorder(node_lst, root_index-1, lenright)
+    else:
+        hufftree.right = HuffmanNode(node.r_data, None, None)
+    if node.l_type:
+        hufftree.left = generate_tree_postorder(node_lst, root_index-lenright)
+    else:
+        hufftree.left = HuffmanNode(node.l_data, None, None)
+    return hufftree, lenright
+  
 def generate_uncompressed(tree, text, size):
     """ Use Huffman tree to decompress size bytes from text.
 
@@ -475,7 +500,6 @@ if __name__ == "__main__":
     # doctest.testmod()
 
     import time
-
     mode = input("Press c to compress or u to uncompress: ")
     if mode == "c":
         fname = input("File to compress: ")
