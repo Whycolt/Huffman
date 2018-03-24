@@ -132,7 +132,7 @@ def get_codes(tree):
     """
     return parse_tree(tree, "")
         
-def parse_tree(node, code, codict=[]):
+def parse_tree(node, code, codict={}):
     dict1, dict2 = {}, {}
     if node.is_leaf:
         codict[node.symbol] = code
@@ -190,7 +190,7 @@ def avg_length(tree, freq_dict):
     newdict = get_codes(tree)
     totalbits = 0
     totalchar = 0
-    for i in newdict():
+    for i in newdict:
         totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
         totalchar = totalchar + freqdict[i]
     return totalbits/totalchar
