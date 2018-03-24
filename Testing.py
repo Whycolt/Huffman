@@ -1,3 +1,4 @@
+from nodes import HuffmanNode, ReadNode
 def get_bit(byte, bit_num):
     """ Return bit number bit_num from right in byte.
 
@@ -40,45 +41,101 @@ def bits_to_byte(bits):
     return sum([int(bits[pos]) << (7 - pos)
                 for pos in range(len(bits))])
 
-def generate_compressed(text, codes):
-    """ Return compressed form of text, using mapping in codes for each symbol.
+def number_nodes(tree):
+    """ Number internal nodes in tree according to postorder traversal;
+    start numbering at 0.
 
-    @param bytes text: a bytes object
-    @param dict(int,str) codes: mapping from symbols to codes
+    @param HuffmanNode tree:  a Huffman tree rooted at node 'tree'
+    @rtype: NoneType
+
+    >>> left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+    >>> right = HuffmanNode(None, HuffmanNode(9), HuffmanNode(10))
+    >>> tree = HuffmanNode(None, left, right)
+    >>> number_nodes(tree)
+    >>> tree.left.number
+    0
+    >>> tree.right.number
+    1
+    >>> tree.number
+    2
+    """
+    parse_num(tree,0)
+
+def parse_num(node,counter):
+    if node.symbol != None:
+        return counter
+    counter = parse_num(node.left,counter)
+    counter = parse_num(node.right,counter)
+    node.number = counter
+    counter = counter + 1
+    return counter
+
+def tree_to_bytes(tree):
+    """ Return a bytes representation of the Huffman tree rooted at tree.
+
+    @param HuffmanNode tree: a Huffman tree rooted at node 'tree'
     @rtype: bytes
 
-    >>> d = {0: "0", 1: "10", 2: "11"}
-    >>> text = bytes([1, 2, 1, 0])
-    >>> result = generate_compressed(text, d)
-    >>> [byte_to_bits(byte) for byte in result]
-    ['10111000']
-    >>> text = bytes([1, 2, 1, 0, 2])
-    >>> result = generate_compressed(text, d)
-    >>> [byte_to_bits(byte) for byte in result]
-    ['10111001', '10000000']
+    The representation should be based on the postorder traversal of tree
+    internal nodes, starting from 0.
+    Precondition: tree has its nodes numbered.
+
+    >>> tree = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+    >>> number_nodes(tree)
+    >>> list(tree_to_bytes(tree))
+    [0, 3, 0, 2]
+    >>> left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+    >>> right = HuffmanNode(5)
+    >>> tree = HuffmanNode(None, left, right)
+    >>> number_nodes(tree)
+    >>> list(tree_to_bytes(tree))
+    [0, 3, 0, 2, 1, 0, 0, 5]
     """
-    convert = ""
-    for i in text:
-        convert = convert + codes[i]
-        print(convert)
-    while len(convert)%8 != 0:
-        convert = convert + "0"
-    print (convert)
-    bytelist = []
-    while len(convert)>7:
-        bytelist.append(convert[:8])
-        print (convert[:8])
-        convert = convert[8:]
-    symbollist = []
-    for i in bytelist:
-        symbollist.append(bits_to_byte(i))
-    return bytes(symbollist)
+    items = []
+    left = False
+    lleaf = False
+    right = False
+    rleaf = False
+    if tree.left != None:
+        left = True
+        if not tree.left.is_leaf():
+            a = tree_to_bytes(tree.left)
+            for i in a:
+                items.append(i)
+        else:
+            lleaf = True
+    if tree.right != None:
+        right = True
+        if not tree.right.is_leaf():
+            a = tree_to_bytes(tree.right)
+            for i in a:
+                items.append(i)
+        else:
+            rleaf = True
+    if left:
+        if lleaf:
+            items.append(0)
+            items.append(tree.left.symbol)
+        else:
+            items.append(1)
+            items.append(tree.left.number)
+    if left:
+        if rleaf:
+            items.append(0)
+            items.append(tree.right.symbol)
+        else:
+            items.append(1)
+            items.append(tree.right.number)
+    return bytes(items)
 
-d = {0: "0", 1: "10", 2: "11"}
-text = bytes([1, 2, 1, 0])
-result = generate_compressed(text, d)
-print([byte_to_bits(byte) for byte in result])
-
-text = bytes([1, 2, 1, 0, 2])
-result = generate_compressed(text, d)
-print([byte_to_bits(byte) for byte in result])
+tree = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+number_nodes(tree)
+print(list(tree_to_bytes(tree)))
+[0, 3, 0, 2]
+left = HuffmanNode(None, HuffmanNode(3), HuffmanNode(2))
+right = HuffmanNode(5)
+tree = HuffmanNode(None, left, right)
+number_nodes(tree)
+print(list(tree_to_bytes(tree)))
+[0, 3, 0, 2, 1, 0, 0, 5]
+    
