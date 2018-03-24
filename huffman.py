@@ -136,7 +136,7 @@ def get_codes(tree):
         
 def parse_tree(node, code, codict={}):
     dict1, dict2 = {}, {}
-    if node.is_leaf:
+    if node.is_leaf():
         codict[node.symbol] = code
         return codict
     if node.left:
