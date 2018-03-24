@@ -114,7 +114,9 @@ def huffman_tree(freq_dict):
         new[str(h1)+str(h2)] = HuffmanNode(None,s1,s2)
         freq_dict.pop(h1)
         freq_dict.pop(h2)
-    for i in new:
+    print(freq_dict)
+    print(new)
+    for i in freq_dict:
         return new[i]
                 
 
