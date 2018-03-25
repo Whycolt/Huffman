@@ -258,40 +258,33 @@ def tree_to_bytes(tree):
     [0, 3, 0, 2, 1, 0, 0, 5]
     """
     items = []
-    left = False
     lleaf = False
-    right = False
     rleaf = False
-    if tree.left != None:
-        left = True
+    if not tree.is_leaf:
         if not tree.left.is_leaf():
             a = tree_to_bytes(tree.left)
             for i in a:
                 items.append(i)
         else:
             lleaf = True
-    if tree.right != None:
-        right = True
         if not tree.right.is_leaf():
             a = tree_to_bytes(tree.right)
             for i in a:
                 items.append(i)
         else:
             rleaf = True
-    if left:
-        if lleaf:
-            items.append(0)
-            items.append(tree.left.symbol)
-        else:
-            items.append(1)
-            items.append(tree.left.number)
-    if left:
-        if rleaf:
-            items.append(0)
-            items.append(tree.left.symbol)
-        else:
-            items.append(1)
-            items.append(tree.left.number)
+    if lleaf:
+        items.append(0)
+        items.append(tree.left.symbol)
+    else:
+        items.append(1)
+        items.append(tree.left.number)
+    if rleaf:
+        items.append(0)
+        items.append(tree.right.symbol)
+    else:
+        items.append(1)
+        items.append(tree.right.number)
     return bytes(items)
 
 
@@ -332,7 +325,7 @@ def compress(in_file, out_file):
     tree = huffman_tree(freq)
     codes = get_codes(tree)
     number_nodes(tree)
-    #print("Bits per symbol:", avg_length(tree, freq))
+    print("Bits per symbol:", avg_length(tree, freq))
     result = (num_nodes_to_bytes(tree) + tree_to_bytes(tree) +
               size_to_bytes(len(text)))
     result += generate_compressed(text, codes)
