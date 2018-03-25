@@ -225,7 +225,11 @@ def generate_compressed(text, codes):
     while len(convert)>7:
         bytelist.append(convert[:8])
         convert = convert[8:]
+<<<<<<< HEAD
+    symbollist = []
+=======
         symbollist = []
+>>>>>>> d40c0f66a0e8ff97ab1e0cee3ab5cd8cdece839b
     for i in bytelist:
         symbollist.append(bits_to_byte(i))
     return bytes(symbollist)
