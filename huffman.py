@@ -92,8 +92,6 @@ def huffman_tree(freq_dict):
     """
     freq = dict(freq_dict)
     new = {}
-    if len(freq) == 0:
-        return None
     if len(freq) == 1:
         for i in freq:
             return HuffmanNode(i)
@@ -116,7 +114,7 @@ def huffman_tree(freq_dict):
             s2 = HuffmanNode(h2)
         else:
             s2 = new[s2]
-        freq_dict[str(h1)+str(h2)]=freq[h1] + freq[h2]
+        freq[str(h1)+str(h2)]=freq[h1] + freq[h2]
         new[str(h1)+str(h2)] = HuffmanNode(None,s1,s2)
         freq.pop(h1)
         freq.pop(h2)
@@ -197,11 +195,8 @@ def avg_length(tree, freq_dict):
     totalbits = 0
     totalchar = 0
     for i in freq_dict:
-        print(i)
-        print(freq_dict[i])
-        print(newdict[i])
         totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
-        totalchar = totalchar + freqdict[i]
+        totalchar = totalchar + freq_dict[i]
     return totalbits/totalchar
 
 def generate_compressed(text, codes):
@@ -230,6 +225,7 @@ def generate_compressed(text, codes):
     while len(convert)>7:
         bytelist.append(convert[:8])
         convert = convert[8:]
+        print(len(convert))
     symbollist = []
     for i in bytelist:
         symbollist.append(bits_to_byte(i))
