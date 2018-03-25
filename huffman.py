@@ -225,7 +225,11 @@ def generate_compressed(text, codes):
     while len(convert)>7:
         bytelist.append(convert[:8])
         convert = convert[8:]
+<<<<<<< HEAD
     symbollist = []
+=======
+        symbollist = []
+>>>>>>> d40c0f66a0e8ff97ab1e0cee3ab5cd8cdece839b
     for i in bytelist:
         symbollist.append(bits_to_byte(i))
     return bytes(symbollist)
@@ -255,13 +259,17 @@ def tree_to_bytes(tree):
     items = []
     lleaf = False
     rleaf = False
-    if not tree.is_leaf:
+    print (not tree.is_leaf)
+    print(tree.left==None or tree.right == None)
+    if tree.left==None or tree.right == None:
+        print(not tree.left.is_leaf())
         if not tree.left.is_leaf():
             a = tree_to_bytes(tree.left)
             for i in a:
                 items.append(i)
         else:
             lleaf = True
+        print(not tree.right.is_leaf())
         if not tree.right.is_leaf():
             a = tree_to_bytes(tree.right)
             for i in a:
@@ -280,6 +288,7 @@ def tree_to_bytes(tree):
     else:
         items.append(1)
         items.append(tree.right.number)
+    print(items)
     return bytes(items)
 
 
@@ -324,6 +333,7 @@ def compress(in_file, out_file):
     result = (num_nodes_to_bytes(tree) + tree_to_bytes(tree) +
               size_to_bytes(len(text)))
     result += generate_compressed(text, codes)
+    print(result)
     with open(out_file, "wb") as f2:
         f2.write(result)
 
