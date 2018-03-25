@@ -255,17 +255,13 @@ def tree_to_bytes(tree):
     items = []
     lleaf = False
     rleaf = False
-    print (not tree.is_leaf)
-    print(tree.left==None or tree.right == None)
-    if tree.left==None or tree.right == None:
-        print(not tree.left.is_leaf())
+    if not tree.is_leaf():
         if not tree.left.is_leaf():
             a = tree_to_bytes(tree.left)
             for i in a:
                 items.append(i)
         else:
             lleaf = True
-        print(not tree.right.is_leaf())
         if not tree.right.is_leaf():
             a = tree_to_bytes(tree.right)
             for i in a:
@@ -284,7 +280,6 @@ def tree_to_bytes(tree):
     else:
         items.append(1)
         items.append(tree.right.number)
-    print(items)
     return bytes(items)
 
 
