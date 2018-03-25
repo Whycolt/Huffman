@@ -319,6 +319,7 @@ def compress(in_file, out_file):
     freq = make_freq_dict(text)
     tree = huffman_tree(freq)
     codes = get_codes(tree)
+    print(tree)
     number_nodes(tree)
     print("Bits per symbol:", avg_length(tree, freq))
     result = (num_nodes_to_bytes(tree) + tree_to_bytes(tree) +
@@ -351,16 +352,15 @@ HuffmanNode(12, None, None)), \
 HuffmanNode(None, HuffmanNode(5, None, None), HuffmanNode(7, None, None)))
     """
     node = node_lst[root_index]
-    hufftree = HuffmanNode(None, None, None)
-    huffpoint = hufftree
+    hufftree = HuffmanNode()
     if node.l_type:
         hufftree.left = generate_tree_general(node_lst, node.l_data)
     else:
-        hufftree.left = HuffmanNode(node.l_data, None, None)
+        hufftree.left = HuffmanNode(node.l_data)
     if node.r_type:
-        hufftree.right = generate_tree_general(node_lst, node.l_data)
+        hufftree.right = generate_tree_general(node_lst, node.r_data)
     else:
-        hufftree.right = HuffmanNode(node.r_data, None, None)
+        hufftree.right = HuffmanNode(node.r_data)
 
     return hufftree
     
@@ -419,9 +419,15 @@ def generate_uncompressed(tree, text, size):
     @rtype: bytes
     """
     codict = get_codes(tree)
-    for key in codict:
-        text.replace(codict[key], key)
-    return text
+    newdict = {v: k for k, v in codict.items()}
+    out = ""
+    buffer = ""
+    for x in range(size):
+        buffer += str(text[x])
+        if buffer in newdict:
+            out+=newdict[buffer]
+            buffer = ""
+    return out.encode()
 
 def bytes_to_nodes(buf):
     """ Return a list of ReadNodes corresponding to the bytes in buf.
@@ -502,6 +508,7 @@ if __name__ == "__main__":
     # doctest.testmod()
 
     import time
+    
     mode = input("Press c to compress or u to uncompress: ")
     if mode == "c":
         fname = input("File to compress: ")
