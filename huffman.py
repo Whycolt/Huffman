@@ -90,20 +90,21 @@ def huffman_tree(freq_dict):
     >>> t == result1 or t == result2
     True
     """
+    freq = dict(freq_dict)
     new = {}
-    if len(freq_dict) == 0:
+    if len(freq) == 0:
         return None
-    len(freq_dict) == 1:
-        for i in freq_dict:
+    if len(freq) == 1:
+        for i in freq:
             return HuffmanNode(i)
-    while len(freq_dict) > 1:
+    while len(freq) > 1:
         s1 = None
         s2 = None
-        for i in freq_dict:
-            if s1 == None or freq_dict[i] < freq_dict[s1]:
+        for i in freq:
+            if s1 == None or freq[i] < freq[s1]:
                 s2 = s1
                 s1 = i
-            elif s2 == None or freq_dict[i] < freq_dict[s2]:
+            elif s2 == None or freq[i] < freq[s2]:
                 s2 = i
         h1 = s1
         h2 = s2
@@ -115,11 +116,11 @@ def huffman_tree(freq_dict):
             s2 = HuffmanNode(h2)
         else:
             s2 = new[s2]
-        freq_dict[str(h1)+str(h2)]=freq_dict[h1] + freq_dict[h2]
+        freq_dict[str(h1)+str(h2)]=freq[h1] + freq[h2]
         new[str(h1)+str(h2)] = HuffmanNode(None,s1,s2)
-        freq_dict.pop(h1)
-        freq_dict.pop(h2)
-    for i in freq_dict:
+        freq.pop(h1)
+        freq.pop(h2)
+    for i in freq:
         return new[i]
                 
 
@@ -195,7 +196,10 @@ def avg_length(tree, freq_dict):
     newdict = get_codes(tree)
     totalbits = 0
     totalchar = 0
-    for i in newdict:
+    for i in freq_dict:
+        print(i)
+        print(freq_dict[i])
+        print(newdict[i])
         totalbits = totalbits + len(str(newdict[i]))*freq_dict[i]
         totalchar = totalchar + freqdict[i]
     return totalbits/totalchar
@@ -264,14 +268,16 @@ def tree_to_bytes(tree):
             a = tree_to_bytes(tree.left)
             for i in a:
                 items.append(i)
-        lleaf = True
+        else:
+            lleaf = True
     if tree.right != None:
         right = True
         if not tree.right.is_leaf():
             a = tree_to_bytes(tree.right)
             for i in a:
                 items.append(i)
-        rleaf = True
+        else:
+            rleaf = True
     if left:
         if lleaf:
             items.append(0)
@@ -326,7 +332,7 @@ def compress(in_file, out_file):
     tree = huffman_tree(freq)
     codes = get_codes(tree)
     number_nodes(tree)
-    print("Bits per symbol:", avg_length(tree, freq))
+    #print("Bits per symbol:", avg_length(tree, freq))
     result = (num_nodes_to_bytes(tree) + tree_to_bytes(tree) +
               size_to_bytes(len(text)))
     result += generate_compressed(text, codes)
